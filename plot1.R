@@ -1,0 +1,36 @@
+# Exploratory Data Analysis
+# Made By: Carlos A. Wilson Pérez, 10-Enero-2015
+
+library(data.table)
+
+# Download file
+temp <- tempfile()
+download.file("https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip", destfile = temp) #destfile="H:/hpc.zip")
+hpc <- unzip(temp)
+
+# Get data frame
+hpc_data <- read.table(hpc, header=TRUE, na.strings = "?", sep=";")
+unlink(temp) 
+
+# Conversion string to date for Date variable.
+hpc_data$Date <- as.Date(hpc_data$Date, format = "%d/%m/%Y")
+
+# Subsetting data frame: from 01/02/2007 to 02/02/2007
+hpc_sub <- hpc_data[hpc_data$Date >= as.Date("2007-02-01") & hpc_data$Date <= as.Date("2007-02-02"),]
+
+# Remove data from environment
+rm(hpc_data)
+
+#Conver variable from factor to numeric
+hpc_sub$Global_active_power <- as.numeric(as.character(hpc_sub$Global_active_power))
+
+# Variable to plot
+gap <- hpc_sub$Global_active_power
+hist(gap, main = "Global Active Power", xlab = "Global Active Power (kilowatts)", plot = TRUE, col="red", ylim=c(0, 1200))
+
+#Ploteo a archivo PNG.
+# Launch PNG graphics device
+png("plot1.png", width=480, height=480, units="px", res=72)
+par(mar=c(4,4,4,4))
+hist(gap, main = "Global Active Power", xlab = "Global Active Power (kilowatts)", plot = TRUE, col="red", ylim=c(0, 1200))
+dev.off() 
